@@ -1,6 +1,4 @@
-# LoneTree Capital Website Clone
-
-This is a clone of the LoneTree Capital website (https://lonetreecap.com/).
+# Lakestar Sponsors Website
 
 ## Structure
 
@@ -34,7 +32,7 @@ This is a clone of the LoneTree Capital website (https://lonetreecap.com/).
 
 ## To Complete
 
-1. Download all images from https://lonetreecap.com/ and place them in the appropriate folders
+1. Add images to the appropriate folders as needed
 2. Create individual news article pages if needed
 3. Create `valueCreation.html` page
 4. Add any additional styling or functionality as needed
