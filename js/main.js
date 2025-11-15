@@ -125,13 +125,20 @@ https://www.tooplate.com/view/2141-minimal-white
                 }
                 
                 try {
+                    // Add timeout to prevent hanging
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+                    
                     const response = await fetch(this.action, {
                         method: 'POST',
                         body: formData,
                         headers: {
                             'Accept': 'application/json'
-                        }
+                        },
+                        signal: controller.signal
                     });
+                    
+                    clearTimeout(timeoutId);
                     
                     if (response.ok) {
                         // Success
@@ -167,14 +174,22 @@ https://www.tooplate.com/view/2141-minimal-white
                         }
                     }
                 } catch (error) {
-                    // Network error
+                    // Network error or timeout
                     console.error('Form submission error:', error);
+                    let errorText = 'Network error. Please check your connection and try again.';
+                    
+                    if (error.name === 'AbortError') {
+                        errorText = 'Request timed out. Please try again.';
+                    } else if (error.message) {
+                        errorText = 'Error: ' + error.message;
+                    }
+                    
                     if (formMessage) {
                         formMessage.style.display = 'block';
                         formMessage.style.backgroundColor = '#f8d7da';
                         formMessage.style.color = '#721c24';
                         formMessage.style.border = '1px solid #f5c6cb';
-                        formMessage.textContent = '✗ Network error. Please check your connection and try again.';
+                        formMessage.textContent = '✗ ' + errorText;
                     }
                 } finally {
                     // Reset button
