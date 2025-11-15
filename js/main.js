@@ -92,9 +92,16 @@ https://www.tooplate.com/view/2141-minimal-white
             observer.observe(el);
         });
 
-        // Form submission (prevent default for demo)
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Message sent successfully!');
-            this.reset();
-        });
+        // Form submission handling
+        const contactForm = document.querySelector('form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                // Let the form submit naturally to Formspree
+                // Formspree will handle the submission and redirect
+                const submitBtn = this.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Sending...';
+                    submitBtn.disabled = true;
+                }
+            });
+        }
