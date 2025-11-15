@@ -256,7 +256,7 @@ Free HTML CSS Template
                 <div class="contact-divider"></div>
                 
                 <div class="contact-form">
-                    <form action="https://formspree.io/f/xdkyejka" method="POST">
+                    <form action="https://formspree.io/f/xdkyejka" method="POST" id="contactForm">
                         <div class="form-group">
                             <input type="text" name="name" placeholder=" " required>
                             <label>Name</label>
@@ -269,6 +269,7 @@ Free HTML CSS Template
                             <textarea name="message" rows="4" placeholder=" " required></textarea>
                             <label>Message</label>
                         </div>
+                        <div id="formMessage" style="display: none; margin-top: 15px; padding: 10px; border-radius: 4px;"></div>
                         <button type="submit" class="submit-btn">Send</button>
                     </form>
                 </div>

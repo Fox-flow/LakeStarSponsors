@@ -92,16 +92,76 @@ https://www.tooplate.com/view/2141-minimal-white
             observer.observe(el);
         });
 
-        // Form submission handling
-        const contactForm = document.querySelector('form');
+        // Form submission handling with AJAX
+        const contactForm = document.getElementById('contactForm');
         if (contactForm) {
-            contactForm.addEventListener('submit', function(e) {
-                // Let the form submit naturally to Formspree
-                // Formspree will handle the submission and redirect
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
                 const submitBtn = this.querySelector('.submit-btn');
+                const formMessage = document.getElementById('formMessage');
+                const formData = new FormData(this);
+                
+                // Show loading state
                 if (submitBtn) {
                     submitBtn.textContent = 'Sending...';
                     submitBtn.disabled = true;
+                }
+                
+                if (formMessage) {
+                    formMessage.style.display = 'none';
+                }
+                
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        // Success
+                        if (formMessage) {
+                            formMessage.style.display = 'block';
+                            formMessage.style.backgroundColor = '#d4edda';
+                            formMessage.style.color = '#155724';
+                            formMessage.style.border = '1px solid #c3e6cb';
+                            formMessage.textContent = '✓ Message sent successfully! We\'ll get back to you soon.';
+                        }
+                        this.reset();
+                        
+                        // Scroll to message
+                        if (formMessage) {
+                            formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    } else {
+                        // Error
+                        const data = await response.json();
+                        if (formMessage) {
+                            formMessage.style.display = 'block';
+                            formMessage.style.backgroundColor = '#f8d7da';
+                            formMessage.style.color = '#721c24';
+                            formMessage.style.border = '1px solid #f5c6cb';
+                            formMessage.textContent = '✗ Error: ' + (data.error || 'Please try again later.');
+                        }
+                    }
+                } catch (error) {
+                    // Network error
+                    if (formMessage) {
+                        formMessage.style.display = 'block';
+                        formMessage.style.backgroundColor = '#f8d7da';
+                        formMessage.style.color = '#721c24';
+                        formMessage.style.border = '1px solid #f5c6cb';
+                        formMessage.textContent = '✗ Network error. Please check your connection and try again.';
+                    }
+                } finally {
+                    // Reset button
+                    if (submitBtn) {
+                        submitBtn.textContent = 'Send';
+                        submitBtn.disabled = false;
+                    }
                 }
             });
         }
