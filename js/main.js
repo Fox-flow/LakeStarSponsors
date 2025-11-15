@@ -93,13 +93,25 @@ https://www.tooplate.com/view/2141-minimal-white
         });
 
         // Form submission handling with AJAX
-        const contactForm = document.getElementById('contactForm');
+        // Find form by action attribute (works even without ID)
+        const contactForm = document.querySelector('form[action*="formspree"]');
         if (contactForm) {
+            // Create message div if it doesn't exist
+            let formMessage = document.getElementById('formMessage');
+            if (!formMessage) {
+                formMessage = document.createElement('div');
+                formMessage.id = 'formMessage';
+                formMessage.style.display = 'none';
+                formMessage.style.marginTop = '15px';
+                formMessage.style.padding = '10px';
+                formMessage.style.borderRadius = '4px';
+                contactForm.appendChild(formMessage);
+            }
+            
             contactForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 const submitBtn = this.querySelector('.submit-btn');
-                const formMessage = document.getElementById('formMessage');
                 const formData = new FormData(this);
                 
                 // Show loading state
@@ -138,17 +150,25 @@ https://www.tooplate.com/view/2141-minimal-white
                         }
                     } else {
                         // Error
-                        const data = await response.json();
+                        let errorMsg = 'Please try again later.';
+                        try {
+                            const data = await response.json();
+                            errorMsg = data.error || errorMsg;
+                        } catch (e) {
+                            // If JSON parse fails, use default message
+                        }
+                        
                         if (formMessage) {
                             formMessage.style.display = 'block';
                             formMessage.style.backgroundColor = '#f8d7da';
                             formMessage.style.color = '#721c24';
                             formMessage.style.border = '1px solid #f5c6cb';
-                            formMessage.textContent = '✗ Error: ' + (data.error || 'Please try again later.');
+                            formMessage.textContent = '✗ Error: ' + errorMsg;
                         }
                     }
                 } catch (error) {
                     // Network error
+                    console.error('Form submission error:', error);
                     if (formMessage) {
                         formMessage.style.display = 'block';
                         formMessage.style.backgroundColor = '#f8d7da';
