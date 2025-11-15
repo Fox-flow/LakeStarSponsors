@@ -256,7 +256,9 @@ Free HTML CSS Template
                 <div class="contact-divider"></div>
                 
                 <div class="contact-form">
-                    <form action="https://formspree.io/f/xdkyejka" method="POST" id="contactForm">
+                    <form action="https://formspree.io/f/xdkyejka" method="POST">
+                        <input type="hidden" name="_next" value="https://lakestarsponsors.com/#contact?success=true">
+                        <input type="hidden" name="_subject" value="New Contact Form Submission - Lakestar Sponsors">
                         <div class="form-group">
                             <input type="text" name="name" placeholder=" " required>
                             <label>Name</label>

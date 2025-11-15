@@ -92,111 +92,32 @@ https://www.tooplate.com/view/2141-minimal-white
             observer.observe(el);
         });
 
-        // Form submission handling with AJAX
-        // Find form by action attribute (works even without ID)
+        // Check for success parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            const formMessage = document.getElementById('formMessage');
+            if (formMessage) {
+                formMessage.style.display = 'block';
+                formMessage.style.backgroundColor = '#d4edda';
+                formMessage.style.color = '#155724';
+                formMessage.style.border = '1px solid #c3e6cb';
+                formMessage.textContent = '✓ Message sent successfully! We\'ll get back to you soon.';
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+            }
+        }
+        
+        // Form submission handling - let it submit normally to Formspree
+        // Formspree will handle the submission and redirect back
         const contactForm = document.querySelector('form[action*="formspree"]');
         if (contactForm) {
-            // Create message div if it doesn't exist
-            let formMessage = document.getElementById('formMessage');
-            if (!formMessage) {
-                formMessage = document.createElement('div');
-                formMessage.id = 'formMessage';
-                formMessage.style.display = 'none';
-                formMessage.style.marginTop = '15px';
-                formMessage.style.padding = '10px';
-                formMessage.style.borderRadius = '4px';
-                contactForm.appendChild(formMessage);
-            }
-            
-            contactForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
+            contactForm.addEventListener('submit', function(e) {
                 const submitBtn = this.querySelector('.submit-btn');
-                const formData = new FormData(this);
-                
-                // Show loading state
                 if (submitBtn) {
                     submitBtn.textContent = 'Sending...';
                     submitBtn.disabled = true;
                 }
-                
-                if (formMessage) {
-                    formMessage.style.display = 'none';
-                }
-                
-                try {
-                    // Add timeout to prevent hanging
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-                    
-                    const response = await fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json'
-                        },
-                        signal: controller.signal
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    
-                    if (response.ok) {
-                        // Success
-                        if (formMessage) {
-                            formMessage.style.display = 'block';
-                            formMessage.style.backgroundColor = '#d4edda';
-                            formMessage.style.color = '#155724';
-                            formMessage.style.border = '1px solid #c3e6cb';
-                            formMessage.textContent = '✓ Message sent successfully! We\'ll get back to you soon.';
-                        }
-                        this.reset();
-                        
-                        // Scroll to message
-                        if (formMessage) {
-                            formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                        }
-                    } else {
-                        // Error
-                        let errorMsg = 'Please try again later.';
-                        try {
-                            const data = await response.json();
-                            errorMsg = data.error || errorMsg;
-                        } catch (e) {
-                            // If JSON parse fails, use default message
-                        }
-                        
-                        if (formMessage) {
-                            formMessage.style.display = 'block';
-                            formMessage.style.backgroundColor = '#f8d7da';
-                            formMessage.style.color = '#721c24';
-                            formMessage.style.border = '1px solid #f5c6cb';
-                            formMessage.textContent = '✗ Error: ' + errorMsg;
-                        }
-                    }
-                } catch (error) {
-                    // Network error or timeout
-                    console.error('Form submission error:', error);
-                    let errorText = 'Network error. Please check your connection and try again.';
-                    
-                    if (error.name === 'AbortError') {
-                        errorText = 'Request timed out. Please try again.';
-                    } else if (error.message) {
-                        errorText = 'Error: ' + error.message;
-                    }
-                    
-                    if (formMessage) {
-                        formMessage.style.display = 'block';
-                        formMessage.style.backgroundColor = '#f8d7da';
-                        formMessage.style.color = '#721c24';
-                        formMessage.style.border = '1px solid #f5c6cb';
-                        formMessage.textContent = '✗ ' + errorText;
-                    }
-                } finally {
-                    // Reset button
-                    if (submitBtn) {
-                        submitBtn.textContent = 'Send';
-                        submitBtn.disabled = false;
-                    }
-                }
+                // Let form submit naturally - Formspree will redirect
             });
         }
