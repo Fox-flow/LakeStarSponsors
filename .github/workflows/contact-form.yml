@@ -1,0 +1,53 @@
+name: Contact Form Handler
+
+on:
+  repository_dispatch:
+    types: [contact-form]
+  workflow_dispatch:
+    inputs:
+      name:
+        required: true
+        type: string
+      email:
+        required: true
+        type: string
+      message:
+        required: true
+        type: string
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub Issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let name, email, message;
+            
+            // Handle both repository_dispatch and workflow_dispatch
+            if (context.eventName === 'repository_dispatch') {
+              const payload = context.payload.client_payload;
+              name = payload.name;
+              email = payload.email;
+              message = payload.message;
+            } else if (context.eventName === 'workflow_dispatch') {
+              name = context.payload.inputs.name;
+              email = context.payload.inputs.email;
+              message = context.payload.inputs.message;
+            }
+            
+            const issueTitle = `Contact Form: ${name}`;
+            const issueBody = `**From:** ${name} (${email})\n\n**Message:**\n${message}\n\n---\n*This issue was created automatically from the contact form on lakestarsponsors.com*`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: ['contact-form']
+            });
+            
+            console.log(`Issue created successfully for ${name}`);
+

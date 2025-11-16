@@ -256,19 +256,17 @@ Free HTML CSS Template
                 <div class="contact-divider"></div>
                 
                 <div class="contact-form">
-                    <form action="https://formspree.io/f/xdkyejka" method="POST">
-                        <input type="hidden" name="_next" value="https://lakestarsponsors.com/#contact?success=true">
-                        <input type="hidden" name="_subject" value="New Contact Form Submission - Lakestar Sponsors">
+                    <form id="contactForm">
                         <div class="form-group">
-                            <input type="text" name="name" placeholder=" " required>
+                            <input type="text" name="name" id="contactName" placeholder=" " required>
                             <label>Name</label>
                         </div>
                         <div class="form-group">
-                            <input type="email" name="email" placeholder=" " required>
+                            <input type="email" name="email" id="contactEmail" placeholder=" " required>
                             <label>Email</label>
                         </div>
                         <div class="form-group">
-                            <textarea name="message" rows="4" placeholder=" " required></textarea>
+                            <textarea name="message" id="contactMessage" rows="4" placeholder=" " required></textarea>
                             <label>Message</label>
                         </div>
                         <div id="formMessage" style="display: none; margin-top: 15px; padding: 10px; border-radius: 4px;"></div>
@@ -283,6 +281,6 @@ Free HTML CSS Template
     <footer>
         <p>© Lakestar Sponsors | <a href="#privacy" style="color: #000; font-weight: 700;">Privacy Policy</a></p>
     </footer>
-<script src="js/main.js?v=8"></script>
+<script src="js/main.js?v=9"></script>
 </body>
 </html>

@@ -108,17 +108,48 @@ https://www.tooplate.com/view/2141-minimal-white
             }
         }
         
-        // Form submission handling - let it submit normally to Formspree
-        // Formspree will handle the submission and redirect back
-        const contactForm = document.querySelector('form[action*="formspree"]');
+        // Contact form submission - uses mailto
+        const contactForm = document.getElementById('contactForm');
         if (contactForm) {
             contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
                 const submitBtn = this.querySelector('.submit-btn');
+                const formMessage = document.getElementById('formMessage');
+                const name = document.getElementById('contactName').value.trim();
+                const email = document.getElementById('contactEmail').value.trim();
+                const message = document.getElementById('contactMessage').value.trim();
+                
                 if (submitBtn) {
                     submitBtn.textContent = 'Sending...';
                     submitBtn.disabled = true;
                 }
-                // Let form submit naturally - Formspree will redirect
+                
+                // Create mailto link with form data
+                const subject = `Contact Form: ${name}`;
+                const body = `From: ${name} (${email})\n\nMessage:\n${message}`;
+                const mailtoLink = `mailto:rushabh@lakestarsponsors.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                
+                // Show message
+                if (formMessage) {
+                    formMessage.style.display = 'block';
+                    formMessage.style.backgroundColor = '#fff3cd';
+                    formMessage.style.color = '#856404';
+                    formMessage.style.border = '1px solid #ffeaa7';
+                    formMessage.textContent = 'Opening email client... Please send to complete your submission.';
+                }
+                
+                // Open mailto link
+                window.location.href = mailtoLink;
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    contactForm.reset();
+                    if (submitBtn) {
+                        submitBtn.textContent = 'Send';
+                        submitBtn.disabled = false;
+                    }
+                }, 3000);
             });
         }
         
@@ -205,5 +236,6 @@ https://www.tooplate.com/view/2141-minimal-white
         setTimeout(forceFixAllSections, 100);
         setTimeout(forceFixAllSections, 500);
         setTimeout(forceFixAllSections, 1000);
+        
         
         
