@@ -121,3 +121,89 @@ https://www.tooplate.com/view/2141-minimal-white
                 // Let form submit naturally - Formspree will redirect
             });
         }
+        
+        // BRUTE FORCE FIX: Apply consistent padding to ALL containers and fix stats grid
+        function forceFixAllSections() {
+            if (window.innerWidth <= 768) {
+                // Apply 20px padding to ALL containers for consistency
+                const allContainers = document.querySelectorAll('.container');
+                allContainers.forEach(container => {
+                    container.style.paddingLeft = '20px';
+                    container.style.paddingRight = '20px';
+                });
+                
+                // Fix stats grid specifically
+                const statsGrid = document.querySelector('.stats-grid');
+                const statsContainer = statsGrid?.closest('.container');
+                if (statsGrid && statsContainer) {
+                    // Get container's available width (accounting for padding)
+                    const containerRect = statsContainer.getBoundingClientRect();
+                    const containerPadding = parseFloat(window.getComputedStyle(statsContainer).paddingLeft) || 0;
+                    const availableWidth = containerRect.width - (containerPadding * 2);
+                    
+                    // Add extra safety margin to ensure no visual bleeding
+                    const safetyMargin = 2;
+                    const gridWidth = availableWidth - safetyMargin;
+                    
+                    // Set grid to fit within container with safety margin
+                    // Force inline style with !important via setProperty
+                    statsGrid.style.setProperty('width', gridWidth + 'px', 'important');
+                    statsGrid.style.setProperty('max-width', gridWidth + 'px', 'important');
+                    
+                    // Calculate item width accounting for 1px gap
+                    const itemWidth = Math.floor((gridWidth - 1) / 2);
+                    
+                    // Force each item to be exactly half minus gap
+                    const statItems = document.querySelectorAll('.stat-item');
+                    statItems.forEach(item => {
+                        item.style.width = itemWidth + 'px';
+                        item.style.maxWidth = itemWidth + 'px';
+                        item.style.minWidth = '0';
+                        item.style.boxSizing = 'border-box';
+                        item.style.flexShrink = '0';
+                    });
+                }
+                
+                // Fix values grid the same way
+                const valuesGrid = document.querySelector('.values-grid');
+                const valuesContainer = valuesGrid?.closest('.container') || valuesGrid?.closest('.values-section');
+                if (valuesGrid && valuesContainer) {
+                    // Get container's available width (accounting for padding)
+                    const containerRect = valuesContainer.getBoundingClientRect();
+                    const containerPadding = parseFloat(window.getComputedStyle(valuesContainer).paddingLeft) || 0;
+                    const availableWidth = containerRect.width - (containerPadding * 2);
+                    
+                    // Add extra safety margin to ensure no visual bleeding
+                    const safetyMargin = 2;
+                    const gridWidth = availableWidth - safetyMargin;
+                    
+                    // Set grid to fit within container with safety margin and align left
+                    valuesGrid.style.setProperty('width', gridWidth + 'px', 'important');
+                    valuesGrid.style.setProperty('max-width', gridWidth + 'px', 'important');
+                    valuesGrid.style.setProperty('margin', '0', 'important');
+                    
+                    // Calculate item width - 2 columns, no gap (gap: 0)
+                    const itemWidth = Math.floor(gridWidth / 2);
+                    
+                    // Force each item to be exactly half
+                    const valueCards = document.querySelectorAll('.value-card');
+                    valueCards.forEach(card => {
+                        card.style.width = itemWidth + 'px';
+                        card.style.maxWidth = itemWidth + 'px';
+                        card.style.minWidth = '0';
+                        card.style.boxSizing = 'border-box';
+                        card.style.flexShrink = '0';
+                    });
+                }
+            }
+        }
+        
+        // Run immediately and on resize
+        forceFixAllSections();
+        window.addEventListener('resize', forceFixAllSections);
+        document.addEventListener('DOMContentLoaded', forceFixAllSections);
+        setTimeout(forceFixAllSections, 100);
+        setTimeout(forceFixAllSections, 500);
+        setTimeout(forceFixAllSections, 1000);
+        
+        
