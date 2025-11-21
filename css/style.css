@@ -665,6 +665,10 @@ https://www.tooplate.com/view/2141-minimal-white
             font-weight: 500;
             margin-bottom: 8px;
             letter-spacing: 0.5px;
+            min-height: 60px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
         }
 
         .timeline-content p {
